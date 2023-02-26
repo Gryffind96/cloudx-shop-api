@@ -23,8 +23,6 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs14.x
-
-# you can overwrite defaults here
   stage: dev
   region: us-east-1
 
@@ -59,8 +57,12 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  getProducts:
+    handler: getProducts.handler
+    events:
+      - httpApi:
+          path: /products
+          method: get 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
