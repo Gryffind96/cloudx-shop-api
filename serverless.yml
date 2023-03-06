@@ -27,6 +27,7 @@ provider:
     cors:
       allowedOrigins:
         - https://d3p9c88204whqm.cloudfront.net
+        - http://localhost:4200
   stage: dev
   region: us-east-1
   environment:
