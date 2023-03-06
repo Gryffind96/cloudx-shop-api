@@ -31,8 +31,7 @@ provider:
   region: us-east-1
   environment:
     PRODUCTS_TABLE: products
-
-iam:
+  iam:
     role:
       statements:
         - Effect: Allow
