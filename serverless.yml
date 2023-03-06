@@ -27,8 +27,34 @@ provider:
     cors:
       allowedOrigins:
         - https://d3p9c88204whqm.cloudfront.net
+        - https://d37voe5ouiuxb3.cloudfront.net
+        - http://localhost:4200
   stage: dev
   region: us-east-1
+  environment:
+    PRODUCTS_TABLE: products
+    STOCKS_TABLE: stocks
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/products"
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/stocks"         
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
@@ -72,7 +98,14 @@ functions:
     events:
       - httpApi:
           path: /products/{productId}
-          method: get     
+          method: get    
+  createProduct:
+    handler: createProduct.handler
+    events:
+      - httpApi:
+          path: /products
+          method: post
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
