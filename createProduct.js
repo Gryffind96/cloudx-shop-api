@@ -5,7 +5,7 @@ const validate = require('./utils/validate')
 const schema = require('./schemas/product.schema')
 module.exports.handler = async (event) => {
   try {
-    const productInfo = JSON.parse(event.body);
+    const {count, ...productInfo} = JSON.parse(event.body);
     const validateResult = validate(schema, productInfo);
     if (validateResult.errors) {
       return {
