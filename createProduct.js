@@ -1,6 +1,6 @@
 
-const { v4: uuidv4 } = require('uuid');
 const dynamoInstance = require('./db')
+const { v4: uuidv4 } = require('uuid');
 const validate = require('./utils/validate')
 const schema = require('./schemas/product.schema')
 module.exports.handler = async (event) => {
@@ -14,13 +14,18 @@ module.exports.handler = async (event) => {
       }
     }
     const productObj = {id: uuidv4(),...productInfo}
-    const product = await dynamoInstance.put({ 
+    await dynamoInstance.put({ 
       TableName: process.env.PRODUCTS_TABLE,
       Item: productObj
     }).promise();
-
-    return product;
+    return {
+      statusCode: 201,
+      body: JSON.stringify(productObj)
+    };
   } catch (error) {
-    throw Error(error)
+    return {
+      statusCode: 400,
+      body: JSON.stringify({message: error.message})
+    };
   }
 };
