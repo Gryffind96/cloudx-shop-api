@@ -1,7 +1,9 @@
 'use strict';
 
 const dynamoInstance = require('./db')
-module.exports.handler = async (event) => {
+module.exports.handler = async (event,context) => {
+  console.info("EVENT\n" + JSON.stringify(event, null, 2))
+  console.log(context.logStreamName)
   try {
     const products = await dynamoInstance.scan({ TableName: process.env.PRODUCTS_TABLE }).promise();
     const productsResponse = [];
