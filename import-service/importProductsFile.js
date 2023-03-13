@@ -1,12 +1,32 @@
 
-const { S3 } = require('aws-sdk')
-
-// TODO: Implement its logic so it will be expecting a request with a name of CSV file with products 
-// and creating a new Signed URL with the following key: uploaded/${fileName}
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3({ region: 'us-east-1' });
 module.exports.handler = async (event) => {
-  const {name} = event.queryStringParameters;
-  return {
-    statusCode: 200,
-    body: 'Hello world'
+  const { name } = event.queryStringParameters;
+  const bucket = process.env.BUCKET_NAME
+
+  const params = {
+    Bucket: bucket,
+    Key: `uploaded/${name}.csv`,
+    Expires: 60,
+    ContentType: 'text/csv'
+  }
+
+  try {
+    const url = await s3.getSignedUrlPromise('getObject', params)
+    return {
+      statusCode: 200,
+      body: JSON.stringify(
+        {
+          url,
+        }
+      )
+    }
+
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify('An error has occurred: \n' + error?.message),
+    };
   }
 }
