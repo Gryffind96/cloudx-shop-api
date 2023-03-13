@@ -6,8 +6,7 @@ provider:
   httpApi:
     cors:
       allowedOrigins:
-        - https://d3p9c88204whqm.cloudfront.net
-        - https://d37voe5ouiuxb3.cloudfront.net
+        - https://d1bzgc5m0vvtgp.cloudfront.net
         - http://localhost:4200
   stage: dev
   region: us-east-1
