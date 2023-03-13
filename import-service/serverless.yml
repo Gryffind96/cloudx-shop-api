@@ -1,0 +1,31 @@
+service: import-service
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: nodejs14.x
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://d3p9c88204whqm.cloudfront.net
+        - https://d37voe5ouiuxb3.cloudfront.net
+        - http://localhost:4200
+  stage: dev
+  region: us-east-1
+  environment:
+    BUCKET_NAME: eshop-task-5
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:*
+          Resource: 
+            - arn:aws:s3:::${process.env.BUCKET_NAME}
+            - arn:aws:s3:::${process.env.BUCKET_NAME}/*
+functions: 
+  importProductsFile:
+    handler: importProductsFile.handler
+    events:
+      - httpApi:
+          path: /import
+          method: get
