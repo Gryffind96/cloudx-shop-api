@@ -1,6 +1,6 @@
 'use strict';
 
-const dynamoInstance = require('./db')
+const dynamoInstance = require('../db')
 module.exports.handler = async (event,context) => {
   console.info("EVENT\n" + JSON.stringify(event, null, 2))
   console.log(context.logStreamName)

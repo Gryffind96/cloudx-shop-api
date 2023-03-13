@@ -1,7 +1,7 @@
 
-const dynamoInstance = require('./db')
+const dynamoInstance = require('../db')
 const { v4: uuidv4 } = require('uuid');
-const validate = require('./utils/validate')
+const validate = require('../utils/validate')
 const schema = require('./schemas/product.schema')
 module.exports.handler = async (event,context) => {
   console.info("EVENT\n" + JSON.stringify(event, null, 2))
