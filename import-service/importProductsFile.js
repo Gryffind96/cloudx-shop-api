@@ -9,7 +9,6 @@ module.exports.handler = async (event) => {
     Bucket: bucket,
     Key: `uploaded/${name}.csv`,
     Expires: 60,
-    ContentType: 'text/csv'
   }
 
   try {
@@ -26,7 +25,7 @@ module.exports.handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify('An error has occurred: \n' + error?.message),
+      body: JSON.stringify('An error has occurred: \t ' + error?.message),
     };
   }
 }
