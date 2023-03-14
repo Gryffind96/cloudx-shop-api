@@ -32,15 +32,12 @@ functions:
       - httpApi:
           path: /import
           method: get
-          parameters:
-              querystrings:
-                name: true
   importFileParser:
-  handler: importFileParser.handler
-  events:
-    - s3:
-        bucket: eshop-task-5
-        event: s3:ObjectCreated:*
-        rules:
-          - prefix: uploaded/
-        existing: true        
+    handler: importFileParser.handler
+    events:
+      - s3:
+          bucket: eshop-task-5
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
