@@ -8,13 +8,17 @@ module.exports.handler = async (event) => {
   const params = {
     Bucket: bucket,
     Key: `uploaded/${name}.csv`,
-    Expires: 60,
+    Expires: 3600,
   }
 
   try {
     const url = await s3.getSignedUrlPromise('getObject', params)
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
       body: JSON.stringify(
         {
           url,
@@ -24,7 +28,7 @@ module.exports.handler = async (event) => {
 
   } catch (error) {
     return {
-      statusCode: 500,
+      statusCode: 400,
       body: JSON.stringify('An error has occurred: \t ' + error?.message),
     };
   }
