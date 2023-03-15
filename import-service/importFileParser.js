@@ -17,17 +17,18 @@ module.exports.handler = async (event) => {
       const command = new GetObjectCommand(params)
       const res = await client.send(command)
 
+      let results = []
+
       return new Promise((resolve, reject) => {
         if (!(res.Body instanceof Readable)) {
           throw new Error('Stream is not readable')
         }
-
         res.Body.pipe(csv())
-          .on('data', (data) => console.log('DATA:', data))
+          .on('data', (data) =>  results.push(data))
           .on('error', (error) => reject(error))
           .on('end', async () => {
             console.log('successfully parsed')
-
+            console.log(results)
             await client.send(
               new CopyObjectCommand({
                 Bucket: process.env.BUCKET_NAME,
@@ -44,7 +45,6 @@ module.exports.handler = async (event) => {
               }),
             )
             console.log('deleted successfully')
-
             resolve()
           })
       })
