@@ -1,4 +1,3 @@
-const csvParser = require('csv-parser');
 const {
   CopyObjectCommand,
   DeleteObjectCommand,
@@ -7,6 +6,7 @@ const {
 } = require('@aws-sdk/client-s3')
 const { Readable } = require('stream')
 const client = new S3Client({ region: 'us-east-1' })
+const csv = require('csv-parser')
 module.exports.handler = async (event) => {
   try {
     event.Records.forEach(async (record) => {
@@ -22,7 +22,7 @@ module.exports.handler = async (event) => {
           throw new Error('Stream is not readable')
         }
 
-        res.Body.pipe(csvParser())
+        res.Body.pipe(csv())
           .on('data', (data) => console.log('DATA:', data))
           .on('error', (error) => reject(error))
           .on('end', async () => {
