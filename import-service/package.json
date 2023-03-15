@@ -1,0 +1,18 @@
+{
+  "name": "import-service",
+  "version": "1.0.0",
+  "description": "serverless app for handling s3 files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Erwin Bustillo",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.290.0",
+    "ajv": "^8.12.0",
+    "aws-sdk": "^2.1335.0",
+    "csv-parser": "^3.0.0",
+    "uuid": "^9.0.0"
+  }
+}
