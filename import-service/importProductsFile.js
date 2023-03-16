@@ -13,7 +13,7 @@ module.exports.handler = async (event) => {
   }
 
   try {
-    const url = await s3.getSignedUrlPromise('putObject', params)
+    const url = await s3.getSignedUrlPromise('getObject', params)
     return {
       statusCode: 200,
       body: JSON.stringify(

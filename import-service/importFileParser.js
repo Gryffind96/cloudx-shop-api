@@ -45,6 +45,7 @@ module.exports.handler = async (event) => {
           )
 
           await s3.deleteObject(params)
+          console.log('object deleted successfully')
         })
     }
 
