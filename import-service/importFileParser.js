@@ -23,7 +23,7 @@ module.exports.handler = async (event) => {
         .createReadStream()
 
       s3Stream
-        .pipe(csvParser())
+        .pipe(csvParser({separator: ';'}))
         .on('data', (data) => {
           console.log(data)
         })
