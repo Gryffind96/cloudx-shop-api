@@ -2,23 +2,23 @@
 const AWS = require('aws-sdk')
 const s3 = new AWS.S3({ region: 'us-east-1' });
 module.exports.handler = async (event) => {
-  const { name } = event.queryStringParameters;
+  const filename = event.queryStringParameters.name;
   const bucket = process.env.BUCKET_NAME
 
   const params = {
     Bucket: bucket,
-    Key: `uploaded/${name}`,
+    Key: `uploaded/${filename}`,
     Expires: 3600,
-    ContentType: 'text/csv'
+    'ContentType': 'text/csv'
   }
 
   try {
-    const url = await s3.getSignedUrlPromise('getObject', params)
+    const url = s3.getSignedUrl('putObject', params)
     return {
       statusCode: 200,
       body: JSON.stringify(
         {
-          message: `${name}`,
+          message: `${filename}`,
           url,
         }
       )
