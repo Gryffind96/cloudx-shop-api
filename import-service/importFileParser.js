@@ -11,7 +11,6 @@ module.exports.handler = async (event) => {
       console.log('No records to process')
       throw new Error();
     }
-    console.log("Bucket", BUCKET)
     for (const record of records) {
       console.log(`Processing Record: ${record.s3.object.key}...`)
       const params = {

@@ -12,6 +12,8 @@ provider:
   region: us-east-1
   environment:
     BUCKET_NAME: eshop-task-5
+  iamManagedPolicies: 
+    - arn:aws:iam::887240492441:policy/S3LambdaReadability  
   iam:
     role:
       statements:
