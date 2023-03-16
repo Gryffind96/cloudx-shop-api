@@ -9,7 +9,16 @@ const client = new S3Client({ region: 'us-east-1' })
 const csv = require('csv-parser')
 module.exports.handler = async (event) => {
   try {
-    event.Records.forEach(async (record) => {
+    const records = event.Records;
+    const recordsLength = records.length;
+    console.log('Import file parser lambda was triggered with records: ', records);
+
+    if (recordsLength === 0) {
+      throw new Error();
+    }
+
+    const asyncRecords = records.map(async (record, index) => {
+
       const params = {
         Bucket: process.env.BUCKET_NAME,
         Key: record.s3.object.key,
@@ -24,10 +33,13 @@ module.exports.handler = async (event) => {
           throw new Error('Stream is not readable')
         }
         res.Body.pipe(csv())
-          .on('data', (data) =>  results.push(data))
+          .on('data', (data) => {
+            console.log('Parsing import csv data: ', data)
+            results.push(data)
+          })
           .on('error', (error) => reject(error))
           .on('end', async () => {
-            console.log('successfully parsed')
+            console.log('successfully parsed. moving to /parsed folder has started.')
             console.log(results)
             await client.send(
               new CopyObjectCommand({
@@ -49,6 +61,8 @@ module.exports.handler = async (event) => {
           })
       })
     })
+
+    await Promise.all(asyncRecords);
 
     return {
       statusCode: 202,
