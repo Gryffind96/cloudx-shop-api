@@ -18,29 +18,36 @@ module.exports.handler = async (event) => {
     }
 
     const asyncRecords = records.map(async (record, index) => {
-
+      const RECORD_INFO = `[RECORD ${index + 1} of ${recordsLength}]`;
       const params = {
         Bucket: process.env.BUCKET_NAME,
         Key: record.s3.object.key,
       }
-      const command = new GetObjectCommand(params)
-      const res = await client.send(command)
 
-      let results = []
+      const streamBody = (
+        await s3Client.send(
+          new GetObjectCommand(params)
+        )
+      ).Body;
 
+      if (!(streamBody instanceof Readable)) {
+        throw new Error(`${RECORD_INFO} is not readable stream`);
+      }
       return new Promise((resolve, reject) => {
-        if (!(res.Body instanceof Readable)) {
-          throw new Error('Stream is not readable')
-        }
-        res.Body.pipe(csv())
+        streamBody
+          .pipe(csv())
           .on('data', (data) => {
-            console.log('Parsing import csv data: ', data)
-            results.push(data)
+            console.log(RECORD_INFO, `Parsing product import CSV data: `, data);
           })
-          .on('error', (error) => reject(error))
+          .on('error', (error) => {
+            console.error(RECORD_INFO, `Parsing error for product import CSV data: `, error);
+            reject(new Error(`${RECORD_INFO} error processing the file`));
+          })
           .on('end', async () => {
-            console.log('successfully parsed. moving to /parsed folder has started.')
-            console.log(results)
+            console.log(
+              RECORD_INFO,
+              `Product data parsed. Moving to "/parsed" folder has started.`
+            );
             await client.send(
               new CopyObjectCommand({
                 Bucket: process.env.BUCKET_NAME,
@@ -57,8 +64,10 @@ module.exports.handler = async (event) => {
               }),
             )
             console.log('deleted successfully')
-            resolve()
-          })
+
+            console.log(RECORD_INFO, 'Uploaded record deleted successfully!');
+            resolve('ok')
+          });
       })
     })
 
