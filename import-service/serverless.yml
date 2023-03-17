@@ -1,0 +1,45 @@
+service: import-service
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: nodejs14.x
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://d1bzgc5m0vvtgp.cloudfront.net
+        - http://localhost:4200
+  stage: dev
+  region: us-east-1
+  environment:
+    BUCKET_NAME: eshop-task-5
+  iamManagedPolicies: 
+    - arn:aws:iam::887240492441:policy/S3LambdaReadability  
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "s3:ListBucket"
+          Resource: 
+            - arn:aws:s3:::eshop-task-5
+        - Effect: Allow
+          Action:
+            - "s3:*"
+          Resource: 
+            - arn:aws:s3:::eshop-task-5
+            - arn:aws:s3:::eshop-task-5/*
+functions: 
+  importProductsFile:
+    handler: importProductsFile.handler
+    events:
+      - httpApi:
+          path: /import
+          method: get
+  importFileParser:
+    handler: importFileParser.handler
+    events:
+      - s3:
+          bucket: eshop-task-5
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true

@@ -1,0 +1,77 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: shop-rest-api
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '3'
+plugins:
+  - serverless-auto-swagger
+provider:
+  name: aws
+  runtime: nodejs14.x
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://d1bzgc5m0vvtgp.cloudfront.net
+        - http://localhost:4200
+  stage: dev
+  region: us-east-1
+  environment:
+    PRODUCTS_TABLE: products
+    STOCKS_TABLE: stocks
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/products"
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/stocks"         
+functions:
+  getProducts:
+    handler: getProducts.handler
+    events:
+      - httpApi:
+          path: /products
+          method: get 
+  getProductById:
+    handler: getProductById.handler
+    events:
+      - httpApi:
+          path: /products/{productId}
+          method: get    
+  createProduct:
+    handler: createProduct.handler
+    events:
+      - httpApi:
+          path: /products
+          method: post
+
