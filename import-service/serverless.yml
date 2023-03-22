@@ -12,6 +12,7 @@ provider:
   region: us-east-1
   environment:
     BUCKET_NAME: eshop-task-5
+    QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/887240492441/catalogItemsQueue"
   iamManagedPolicies: 
     - arn:aws:iam::887240492441:policy/S3LambdaReadability  
   iam:
@@ -27,6 +28,10 @@ provider:
           Resource: 
             - arn:aws:s3:::eshop-task-5
             - arn:aws:s3:::eshop-task-5/*
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource: "arn:aws:sqs:us-east-1:887240492441:catalogItemsQueue"    
 functions: 
   importProductsFile:
     handler: importProductsFile.handler

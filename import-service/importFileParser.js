@@ -1,59 +1,67 @@
-let csvParser = require('csv-parser')
-const AWS = require('aws-sdk')
-module.exports.handler = async (event) => {
+const { GetObjectCommand, S3Client, CopyObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { SQSClient, SendMessageCommand } = require('@aws-sdk/client-sqs')
+const csv = require('csv-parser')
+
+module.exports.handler = async (event, context) => {
+  const queueUrl = process.env.QUEUE_URL
+  const s3Bucket = process.env.BUCKET_NAME;
+  const s3Client = new S3Client({ region: 'us-east-1' });
+  const sqsClient = new SQSClient({ region: 'us-east-1' })
   try {
-    const s3 = new AWS.S3({ region: 'us-east-1' })
-    const records = event.Records;
-    const recordsLength = records.length;
-    console.log('Import file parser lambda was triggered with records: ', records);
-    const BUCKET = process.env.BUCKET_NAME
-    if (recordsLength === 0) {
-      console.log('No records to process')
-      throw new Error();
-    }
-    for (const record of records) {
-      console.log(`Processing Record: ${record.s3.object.key}...`)
-      const params = {
-        Bucket: BUCKET,
-        Key: record.s3.object.key,
-      }
+    for await (const record of event.Records) {
+      const getObjectCommand = new GetObjectCommand({
+        Bucket: s3Bucket,
+        Key: record.s3.object.key
+      });
 
-      const s3Stream = s3
-        .getObject(params)
-        .createReadStream()
+      const response = await s3Client.send(getObjectCommand);
+      const productsData = await new Promise((resolve, reject) => {
+        const resultData = [];
+        response.Body
+          .pipe(csv())
+          .on('data', (data) => {
+            resultData.push(data);
+          })
+          .on('end', () => {
+            console.log('csv parsed successfully', resultData);
+            console.log(`Copy from ${BUCKET}/${record.s3.object.key}`)
 
-      s3Stream
-        .pipe(csvParser({separator: ';'}))
-        .on('data', (data) => {
-          console.log(data)
-        })
-        .on('end', async () => {
-          console.log(`Copy from ${BUCKET}/${record.s3.object.key}`)
-          await s3
-            .copyObject({
-              Bucket: BUCKET,
-              CopySource: `${BUCKET}/${record.s3.object.key}`,
+            const copyObjectCmd = new CopyObjectCommand({
+              Bucket: s3Bucket,
+              CopySource: `${s3Bucket}/${record.s3.object.key}`,
               Key: record.s3.object.key.replace('uploaded', 'parsed')
             })
-            .promise()
-          console.log(
-            `Copied into ${BUCKET}/${record.s3.object.key.replace(
-              'uploaded',
-              'parsed'
-            )}`
-          )
 
-          await s3.deleteObject(params)
-          console.log('object deleted successfully')
-        })
+            await client.send(copyObjectCmd);
+            console.log('importFileParser moved csv to parsed location');
+
+            const deleteCmd = new DeleteObjectCommand({
+              Bucket: s3Bucket,
+              Key: record.s3.object.key
+            })
+            await client.send(deleteCmd);
+            console.log('importFileParser deleted from uploaded location');
+            resolve(resultData)
+          })
+          .on('error', (err) => {
+            reject(err);
+          });
+      });
+      const sendMessage = new SendMessageCommand({
+        QueueUrl: queueUrl,
+        MessageBody: JSON.stringify(productsData),
+      });
+      const response = await sqsClient.send(sendMessage);
+      console.log('SQS response', response)
+      return {
+        statusCode: 200,
+      };
     }
-
   } catch (error) {
+    console.log('ERROR', error)
     return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: error.message,
-      }),
-    }
+      statusCode: 400,
+      body: JSON.stringify({ message: 'Failure occurred during processing data' })
+    };
   }
 }
