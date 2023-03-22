@@ -35,6 +35,7 @@ provider:
     PRODUCTS_TABLE: products
     STOCKS_TABLE: stocks
     SNS_TOPIC_ARN: !Ref productsDBUpdated
+    SNS_REGION: us-east-1
   iam:
     role:
       statements:
