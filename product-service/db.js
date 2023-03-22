@@ -1,10 +1,9 @@
 
-
-const AWS = require('aws-sdk');
+const AWS = require('aws-sdk')
 
 AWS.config.update({
-  region: 'us-east-1',
+  region: 'us-east-1'
 })
 
 const db = new AWS.DynamoDB.DocumentClient()
-module.exports = db;
+module.exports = db
