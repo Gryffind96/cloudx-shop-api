@@ -56,7 +56,7 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/stocks"
-                  - Effect: Allow
+        - Effect: Allow
           Action:
             - sqs:CreateQueue
             - sqs:ReceiveMessage
