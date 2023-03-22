@@ -34,6 +34,7 @@ provider:
   environment:
     PRODUCTS_TABLE: products
     STOCKS_TABLE: stocks
+    SNS_TOPIC_ARN: !Ref productsDBUpdated
   iam:
     role:
       statements:
@@ -54,7 +55,17 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/stocks"         
+          Resource: "arn:aws:dynamodb:us-east-1:887240492441:table/stocks"
+                  - Effect: Allow
+          Action:
+            - sqs:CreateQueue
+            - sqs:ReceiveMessage
+          Resource: 
+            Fn::GetAtt: [ catalogItemsQueue, Arn ]
+        - Effect: "Allow"
+          Resource: "*"
+          Action:
+            - "sns:*"     
 functions:
   getProducts:
     handler: getProducts.handler
@@ -74,4 +85,29 @@ functions:
       - httpApi:
           path: /products
           method: post
+  catalogBatchProcess:
+    handler: catalogBatchProcess.handler
+    events:
+      - sqs:
+          arn: arn:aws:sqs:us-east-1:887240492441:catalogItemsQueue
+          batchSize: 5
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+    productsDBUpdated:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: productsDBUpdated
+    productsDBUpdatedTopicSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: erwinb1996@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: productsDBUpdated
+
+
 
