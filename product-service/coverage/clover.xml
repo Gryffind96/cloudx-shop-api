@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1680102187613" clover="3.2.0">
-  <project timestamp="1680102187613" name="All files">
+<coverage generated="1680104376351" clover="3.2.0">
+  <project timestamp="1680104376351" name="All files">
     <metrics statements="41" coveredstatements="40" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1" elements="44" coveredelements="42" complexity="0" loc="41" ncloc="41" packages="1" files="2" classes="2"/>
     <file name="catalogBatchProcess.js" path="/Users/erwin_bustillo/Documents/shop-rest-api/product-service/catalogBatchProcess.js">
       <metrics statements="32" coveredstatements="31" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>

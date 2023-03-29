@@ -40,7 +40,7 @@ describe("catalogBatchProcess", () => {
 
     Mocker.setSDKInstance(AWS);
     // Arrange
-    Mocker.mock('DynamoDB', 'putItem', function (params, callback) {
+    Mocker.mock('DynamoDB.DocumentClient', 'put', function (params, callback) {
       callback(null, 'successfully put item in database');
     });
 
