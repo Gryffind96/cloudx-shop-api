@@ -53,8 +53,7 @@ export const handler = async (event, context) => {
         QueueUrl: queueUrl,
         MessageBody: JSON.stringify(productsData),
       });
-      const result = await sqsClient.send(sendMessage);
-      console.log('SQS response: ', result)
+      await sqsClient.send(sendMessage);
       return {
         statusCode: 200,
       };
