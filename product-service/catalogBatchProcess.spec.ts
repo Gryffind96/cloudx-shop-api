@@ -1,6 +1,5 @@
-//const { expect, test, beforeAll, afterAll, describe } = require('@jest/globals');
-const aws = require("aws-sdk");
-const AWSMock = require("aws-sdk-mock");
+const AWS = require("aws-sdk");
+const Mocker = require("aws-sdk-mock");
 const { handler } = require('./catalogBatchProcess');
 const mockEvent = {
   Records: [
@@ -28,7 +27,7 @@ const mockEvent = {
 const env = process.env;
 
 beforeAll((done) => {
-  process.env = { ...env, SNS_ARN: "arn::123" };
+  process.env = { ...env, SNS_ARN: "arn::123", PRODUCTS_TABLE: 'products', SNS_TOPIC_ARN: 'whatever' };
   done();
 });
 
@@ -37,22 +36,27 @@ afterAll(() => {
 });
 
 describe("catalogBatchProcess", () => {
-  test("should push items from SQS to SNS", async () => {
-    //const adpt = productsDbDynamoAdapter;
+  it("should push items from SQS to SNS", async () => {
 
-    const mockPublishToSNS = jest.fn().mockImplementation((_) => {
-      console.log("SNS", "tranpublishsactWrite", "mock called");
+    Mocker.setSDKInstance(AWS);
+    // Arrange
+    Mocker.mock('DynamoDB', 'putItem', function (params, callback) {
+      callback(null, 'successfully put item in database');
     });
-    const mockTransactWrite = jest.fn().mockImplementation((_) => {
-      console.log("DynamoDB.DocumentClient", "transactWrite", "mock called");
-    });
-    AWSMock.setSDKInstance(aws);
-    AWSMock.mock("DynamoDB.DocumentClient", "transactWrite", mockTransactWrite);
-    AWSMock.mock("SNS", "publish", mockPublishToSNS);
 
+    Mocker.mock('SNS', 'publish', 'poc');
+    const sns = new AWS.SNS({ region: env.AWS_REGION })
+    // Act
     await handler(mockEvent);
+    // Assert
+    let params = {
+      Message: JSON.stringify({ data: 'Message you want to send to SNS topic' })
+    }
 
-    expect(mockTransactWrite).toBeCalled();
-    expect(mockPublishToSNS).toBeCalled();
-  });
-});
+    sns.publish(params, (error, res) => { // Publish to SNS topic
+      expect(res).toBe('poc'); // Mocked response to equal to ‘success’ string from above
+      Mocker.restore('SNS', 'publish');
+      Mocker.restore('DynamoDB');
+    });
+  })
+})

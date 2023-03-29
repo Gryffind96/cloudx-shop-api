@@ -9,13 +9,12 @@ module.exports.handler = async (event) => {
   try {
     for (const record of event.Records) {
       const productData = JSON.parse(record.body)
-      for (product of productData) {
-        const productObj = { id: uuidv4(), ...product }
-        await db.put({
-          TableName: process.env.PRODUCTS_TABLE,
-          Item: productObj
-        }).promise()
-      }
+      const productObj = { id: uuidv4(), ...productData }
+      await db.put({
+        TableName: process.env.PRODUCTS_TABLE,
+        Item: productObj
+      }).promise()
+      
       const snsPublishCommand = new PublishCommand({
         TopicArn: snsTopicArn,
         Subject: 'ProductDB updated',
