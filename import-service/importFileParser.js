@@ -7,6 +7,7 @@ module.exports.handler = async (event) => {
   const s3Bucket = process.env.BUCKET_NAME;
   const s3Client = new S3Client({ region: 'us-east-1' });
   const sqsClient = new SQSClient({ region: 'us-east-1' })
+  console.log(queueUrl,s3Bucket)
   try {
     for await (const record of event.Records) {
       const getObjectCommand = new GetObjectCommand({
