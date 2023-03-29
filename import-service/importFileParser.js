@@ -2,7 +2,7 @@ const { GetObjectCommand, S3Client, CopyObjectCommand, DeleteObjectCommand } = r
 const { SQSClient, SendMessageCommand } = require('@aws-sdk/client-sqs')
 const csv = require('csv-parser')
 
-module.exports.handler = async (event, context) => {
+module.exports.handler = async (event) => {
   const queueUrl = process.env.QUEUE_URL
   const s3Bucket = process.env.BUCKET_NAME;
   const s3Client = new S3Client({ region: 'us-east-1' });

@@ -24,10 +24,10 @@ provider:
             - arn:aws:s3:::eshop-task-5
         - Effect: Allow
           Action:
-            - "s3:*"
-          Resource: 
-            - arn:aws:s3:::eshop-task-5
-            - arn:aws:s3:::eshop-task-5/*
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource: "*"
         - Effect: Allow
           Action:
             - sqs:SendMessage
