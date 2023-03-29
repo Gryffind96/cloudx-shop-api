@@ -1,13 +1,14 @@
-const { GetObjectCommand, S3Client, CopyObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const { SQSClient, SendMessageCommand } = require('@aws-sdk/client-sqs')
-const csv = require('csv-parser')
+import { GetObjectCommand, S3Client, CopyObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
+import csv from 'csv-parser';
 
-module.exports.handler = async (event) => {
+export const handler = async (event, context) => {
+  const awsRegion = 'us-east-1';
   const queueUrl = process.env.QUEUE_URL
   const s3Bucket = process.env.BUCKET_NAME;
-  const s3Client = new S3Client({ region: 'us-east-1' });
-  const sqsClient = new SQSClient({ region: 'us-east-1' })
-  console.log(queueUrl,s3Bucket)
+
+  const s3Client = new S3Client({ region: awsRegion });
+  const sqsClient = new SQSClient({ region: awsRegion })
   try {
     for await (const record of event.Records) {
       const getObjectCommand = new GetObjectCommand({
@@ -23,9 +24,9 @@ module.exports.handler = async (event) => {
           .on('data', (data) => {
             resultData.push(data);
           })
-          .on('end', () => {
+          .on('end', async () => {
             console.log('csv parsed successfully', resultData);
-            console.log(`Copy from ${BUCKET}/${record.s3.object.key}`)
+            console.log(`Copy from ${s3Bucket}/${record.s3.object.key}`)
 
             const copyObjectCmd = new CopyObjectCommand({
               Bucket: s3Bucket,
@@ -33,14 +34,14 @@ module.exports.handler = async (event) => {
               Key: record.s3.object.key.replace('uploaded', 'parsed')
             })
 
-            await client.send(copyObjectCmd);
+            await s3Client.send(copyObjectCmd);
             console.log('importFileParser moved csv to parsed location');
 
             const deleteCmd = new DeleteObjectCommand({
               Bucket: s3Bucket,
               Key: record.s3.object.key
             })
-            await client.send(deleteCmd);
+            await s3Client.send(deleteCmd);
             console.log('importFileParser deleted from uploaded location');
             resolve(resultData)
           })
@@ -52,8 +53,8 @@ module.exports.handler = async (event) => {
         QueueUrl: queueUrl,
         MessageBody: JSON.stringify(productsData),
       });
-      const response = await sqsClient.send(sendMessage);
-      console.log('SQS response', response)
+      const result = await sqsClient.send(sendMessage);
+      console.log('SQS response: ', result)
       return {
         statusCode: 200,
       };
@@ -65,4 +66,4 @@ module.exports.handler = async (event) => {
       body: JSON.stringify({ message: 'Failure occurred during processing data' })
     };
   }
-}
+};

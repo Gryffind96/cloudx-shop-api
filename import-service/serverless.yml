@@ -2,7 +2,7 @@ service: import-service
 frameworkVersion: '3'
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   httpApi:
     cors:
       allowedOrigins:
@@ -13,10 +13,10 @@ provider:
   environment:
     BUCKET_NAME: eshop-task-5
     QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/887240492441/catalogItemsQueue"
-  iamManagedPolicies: 
-    - arn:aws:iam::887240492441:policy/S3LambdaReadability  
   iam:
     role:
+      managedPolicies:
+        - arn:aws:iam::887240492441:policy/S3LambdaReadability
       statements:
         - Effect: Allow
           Action: "s3:ListBucket"
