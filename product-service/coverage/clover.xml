@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1679502253360" clover="3.2.0">
-  <project timestamp="1679502253360" name="All files">
-    <metrics statements="42" coveredstatements="29" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1" elements="45" coveredelements="31" complexity="0" loc="42" ncloc="42" packages="1" files="2" classes="2"/>
+<coverage generated="1680104376351" clover="3.2.0">
+  <project timestamp="1680104376351" name="All files">
+    <metrics statements="41" coveredstatements="40" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1" elements="44" coveredelements="42" complexity="0" loc="41" ncloc="41" packages="1" files="2" classes="2"/>
     <file name="catalogBatchProcess.js" path="/Users/erwin_bustillo/Documents/shop-rest-api/product-service/catalogBatchProcess.js">
-      <metrics statements="33" coveredstatements="20" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      <metrics statements="32" coveredstatements="31" conditionals="2" coveredconditionals="1" methods="1" coveredmethods="1"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
@@ -15,20 +15,20 @@
       <line num="9" count="1" type="stmt"/>
       <line num="10" count="1" type="stmt"/>
       <line num="11" count="1" type="stmt"/>
-      <line num="12" count="1" type="cond" truecount="0" falsecount="1"/>
-      <line num="13" count="0" type="stmt"/>
-      <line num="14" count="0" type="stmt"/>
-      <line num="15" count="0" type="stmt"/>
-      <line num="16" count="0" type="stmt"/>
-      <line num="17" count="0" type="stmt"/>
-      <line num="18" count="0" type="stmt"/>
-      <line num="19" count="0" type="stmt"/>
-      <line num="20" count="0" type="stmt"/>
-      <line num="21" count="0" type="stmt"/>
-      <line num="22" count="0" type="stmt"/>
-      <line num="23" count="0" type="stmt"/>
-      <line num="24" count="0" type="stmt"/>
-      <line num="25" count="0" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="19" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="24" count="0" type="cond" truecount="0" falsecount="1"/>
+      <line num="25" count="1" type="stmt"/>
       <line num="26" count="1" type="stmt"/>
       <line num="27" count="1" type="stmt"/>
       <line num="28" count="1" type="stmt"/>
@@ -36,7 +36,6 @@
       <line num="30" count="1" type="stmt"/>
       <line num="31" count="1" type="stmt"/>
       <line num="32" count="1" type="stmt"/>
-      <line num="33" count="1" type="stmt"/>
     </file>
     <file name="db.js" path="/Users/erwin_bustillo/Documents/shop-rest-api/product-service/db.js">
       <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
