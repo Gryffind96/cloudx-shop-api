@@ -6,10 +6,11 @@ provider:
   httpApi:
     authorizers: 
       basicAuthorizer: 
-        type: "request"
-        functionArn: "arn:aws:lambda:us-east-1:887240492441:function:authorization-service-dev-basicAuthorizer"
-        identitySource: ["$request.header.Authorization"]
-        payloadVersion: "2.0"
+        type: request
+        functionArn: arn:aws:lambda:us-east-1:887240492441:function:authorization-service-dev-basicAuthorizer
+        identitySource: 
+          - $request.header.Authorization
+        payloadVersion: '2.0'
     cors:
       allowedOrigins:
         - https://d1bzgc5m0vvtgp.cloudfront.net
@@ -46,7 +47,7 @@ functions:
           path: /import
           method: get
           authorizer: 
-            name: "basicAuthorizer"
+            name: basicAuthorizer
   importFileParser:
     handler: importFileParser.handler
     events:
