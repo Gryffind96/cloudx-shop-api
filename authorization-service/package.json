@@ -1,0 +1,17 @@
+{
+  "name": "authorization-service",
+  "version": "1.0.0",
+  "description": "authorization service",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Erwin Bustillo",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1338.0"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^6.0.0"
+  }
+}
