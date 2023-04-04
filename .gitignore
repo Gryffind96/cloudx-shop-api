@@ -7,3 +7,6 @@ jspm_packages
 
 # test coverage
 coverage
+
+# .env files
+.env
